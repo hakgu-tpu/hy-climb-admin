@@ -19,6 +19,12 @@ const AdminLayout = () => {
               <NavLink to="/centers" className={linkClass}>
                 Centers
               </NavLink>
+              <NavLink to="/events" className={linkClass}>
+                Events
+              </NavLink>
+              <NavLink to="/meetings" className={linkClass}>
+                Meetings
+              </NavLink>
               <NavLink to="/config" className={linkClass}>
                 Config
               </NavLink>
