@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabaseClient'
 import JsonField from '@/components/JsonField'
+import EventFields from '@/components/EventFields'
+import MeetingFields from '@/components/MeetingFields'
 
 const ConfigPage = () => {
   const [form, setForm] = useState(null)
+  const [centers, setCenters] = useState([])
   const [error, setError] = useState(null)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
@@ -18,6 +21,11 @@ const ConfigPage = () => {
         if (error) setError(error.message)
         else setForm(data)
       })
+    supabase
+      .from('centers')
+      .select('id, name')
+      .order('id')
+      .then(({ data }) => setCenters(data ?? []))
   }, [])
 
   const handleSubmit = async (e) => {
@@ -47,6 +55,14 @@ const ConfigPage = () => {
       {error && <p className="text-sm text-red-500">{error}</p>}
       {saved && <p className="text-sm text-emerald-600">Saved.</p>}
 
+      <EventFields value={form.event} onChange={(event) => setForm((f) => ({ ...f, event }))} />
+
+      <MeetingFields
+        value={form.meeting}
+        centers={centers}
+        onChange={(meeting) => setForm((f) => ({ ...f, meeting }))}
+      />
+
       <div>
         <label className="block text-xs font-medium text-zinc-500 mb-1">Instagram URL</label>
         <input
@@ -61,18 +77,6 @@ const ConfigPage = () => {
         value={form.departure}
         onChange={(v) => setForm((f) => ({ ...f, departure: v }))}
         placeholder='{"name":"...","nameEn":"...","naverPlaceId":"..."}'
-      />
-      <JsonField
-        label="event"
-        value={form.event}
-        onChange={(v) => setForm((f) => ({ ...f, event: v }))}
-        placeholder='{"active":false,"title":"...","date":"2026-05-16"}'
-      />
-      <JsonField
-        label="meeting"
-        value={form.meeting}
-        onChange={(v) => setForm((f) => ({ ...f, meeting: v }))}
-        placeholder='{"active":false,"centerId":"","date":"2026-05-29","time":"17:00"}'
       />
 
       <button
